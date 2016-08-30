@@ -1,0 +1,5 @@
+version: '2'
+services:
+  kubedeploy:
+    build: .
+    env_file: .env

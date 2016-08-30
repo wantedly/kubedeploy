@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"k8s.io/kubernetes/pkg/api"
 	client "k8s.io/kubernetes/pkg/client/unversioned"
@@ -50,8 +51,16 @@ func main() {
 		os.Exit(1)
 	}
 
+	podInfos := []string{}
 	for _, pod := range pods.Items {
-		fmt.Println(pod.Name + "," + pod.Spec.Containers[0].Image + "," + pod.Namespace)
+		podInfoList := []string{
+			pod.Name,
+			pod.Spec.Containers[0].Image,
+			pod.Namespace}
+		podInfos = append(podInfos, strings.Join(podInfoList, ","))
 	}
 
+	for _, info := range podInfos {
+		fmt.Println(info)
+	}
 }
