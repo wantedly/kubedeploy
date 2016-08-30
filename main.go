@@ -32,7 +32,7 @@ func newKubeClient() (*client.Client, error) {
 	return kubeClient, nil
 }
 
-func getPodInfos(kubeClient) {
+func getPodInfos(kubeClient *client.Client) []string {
 	pods, err := kubeClient.Pods(api.NamespaceAll).List(api.ListOptions{})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -65,7 +65,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	podInfos := getImages(kubeClient)
+	podInfos := getPodInfos(kubeClient)
 
 	for _, info := range podInfos {
 		fmt.Println(info)
