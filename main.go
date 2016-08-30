@@ -32,19 +32,7 @@ func newKubeClient() (*client.Client, error) {
 	return kubeClient, nil
 }
 
-func main() {
-
-	flag.Parse()
-	if flag.NArg() != 1 {
-		fmt.Println("Usage: ./kubedeploy get")
-		os.Exit(1)
-	}
-
-	kubeClient, err := newKubeClient()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+func getPodInfos(kubeClient) {
 	pods, err := kubeClient.Pods(api.NamespaceAll).List(api.ListOptions{})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -59,6 +47,25 @@ func main() {
 			pod.Namespace}
 		podInfos = append(podInfos, strings.Join(podInfoList, ","))
 	}
+
+	return podInfos
+}
+
+func main() {
+
+	flag.Parse()
+	if flag.NArg() != 1 {
+		fmt.Println("Usage: ./kubedeploy get")
+		os.Exit(1)
+	}
+
+	kubeClient, err := newKubeClient()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	podInfos := getImages(kubeClient)
 
 	for _, info := range podInfos {
 		fmt.Println(info)
