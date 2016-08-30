@@ -3,42 +3,34 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
-	"os/exec"
-	"strings"
+
+	"k8s.io/kubernetes/pkg/api"
+	client "k8s.io/kubernetes/pkg/client/unversioned"
+	"k8s.io/kubernetes/pkg/client/unversioned/clientcmd"
 )
 
 var KUBECTL = "kubectl"
 
-func execOutput(app string, commands []string) string {
-	out, err := exec.Command(app, commands...).Output()
+func newKubeClient() (*client.Client, error) {
+	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
+	loadingRules.ExplicitPath = clientcmd.RecommendedHomeFile
+
+	loader := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, &clientcmd.ConfigOverrides{})
+
+	clientConfig, err := loader.ClientConfig()
+
 	if err != nil {
-		log.Fatal(err)
-	}
-	return string(out)
-}
-
-func getNamespaces() []string {
-	out := execOutput(KUBECTL, []string{"get", "namespace"})
-
-	records := strings.Split(out, "\n")[1:]
-	records = records[:len(records)-1]
-
-	namespaces := []string{}
-	for key := range records {
-		namespaces = append(namespaces, strings.Split(records[key], " ")[0])
+		return nil, err
 	}
 
-	return namespaces
-}
+	kubeClient, err := client.New(clientConfig)
 
-func getDescribePods() {
+	if err != nil {
+		return nil, err
+	}
 
-}
-
-func getImages() {
-
+	return kubeClient, nil
 }
 
 func main() {
@@ -49,12 +41,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	// get namespace
-	namespaces := getNamespaces()
-	fmt.Println(namespaces)
+	kubeClient, err := newKubeClient()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	pods, err := kubeClient.Pods(api.NamespaceAll).List(api.ListOptions{})
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 
-	// get describe
-
-	// get images
+	for _, pod := range pods.Items {
+		fmt.Println(pod.Name + "," + pod.Spec.Containers[0].Image + "," + pod.Namespace)
+	}
 
 }
