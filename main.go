@@ -10,8 +10,6 @@ import (
 	"k8s.io/kubernetes/pkg/client/unversioned/clientcmd"
 )
 
-var KUBECTL = "kubectl"
-
 func newKubeClient() (*client.Client, error) {
 	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
 	loadingRules.ExplicitPath = clientcmd.RecommendedHomeFile
