@@ -6,16 +6,39 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 var KUBECTL = "kubectl"
 
-func getExecOutput(app string, commands []string) string {
+func execOutput(app string, commands []string) string {
 	out, err := exec.Command(app, commands...).Output()
 	if err != nil {
 		log.Fatal(err)
 	}
 	return string(out)
+}
+
+func getNamespaces() []string {
+	out := execOutput(KUBECTL, []string{"get", "namespace"})
+
+	records := strings.Split(out, "\n")[1:]
+	records = records[:len(records)-1]
+
+	namespaces := []string{}
+	for key := range records {
+		namespaces = append(namespaces, strings.Split(records[key], " ")[0])
+	}
+
+	return namespaces
+}
+
+func getDescribePods() {
+
+}
+
+func getImages() {
+
 }
 
 func main() {
@@ -26,11 +49,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	sub_commands := []string{"get", "po"}
-	out := getExecOutput(KUBECTL, sub_commands)
-	fmt.Println(out)
-
 	// get namespace
+	namespaces := getNamespaces()
+	fmt.Println(namespaces)
 
 	// get describe
 
