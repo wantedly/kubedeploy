@@ -22,6 +22,6 @@ _testmain.go
 *.exe
 *.test
 *.prof
-src/k8s.io
+src
 
 bin
