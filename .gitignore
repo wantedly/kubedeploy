@@ -26,3 +26,5 @@ src
 bin
 main
 kubedeploy
+.DS_Store
+
