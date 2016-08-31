@@ -34,8 +34,8 @@ func main() {
 
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var (
-		pod   = fs.String("p", "", "help message for long")
-		image = fs.String("i", "", "help message for long")
+		pod   = fs.String("p", "", "Pod name")
+		image = fs.String("i", "", "Image name")
 	)
 	fs.Parse(os.Args[2:])
 

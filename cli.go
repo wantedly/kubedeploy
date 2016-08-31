@@ -14,8 +14,6 @@ func cli(kubeClient *client.Client, params map[string]string) {
 			fmt.Println(info)
 		}
 	case "deploy":
-		fmt.Println(params["image"])
-		fmt.Println(params["pod"])
 		if params["image"] != "" && params["pod"] != "" {
 			deploy(kubeClient, params)
 		}
