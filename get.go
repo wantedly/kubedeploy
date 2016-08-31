@@ -9,10 +9,6 @@ import (
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
-func printInfos(podInfos []string) {
-
-}
-
 func get(kubeClient *client.Client, namespace string) []string {
 
 	if namespace == "" {
