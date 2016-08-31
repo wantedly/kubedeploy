@@ -43,11 +43,11 @@ func deploy(kubeClient *client.Client, params map[string]string) {
 	commandOptions := []string{"get", "pod", myPodInfo["pod"], "-o", "yaml"}
 	result := ExecOutput("kubectl", commandOptions)
 	result = strings.Replace(result, myPodInfo["image"], params["image"], -1)
-	fmt.Println(result)
 
 	ioutil.WriteFile("tmp.dat", []byte(result), os.ModePerm)
 	defer os.Remove("tmp.dat")
 
-	// kubectl replace
-
+	commandOptions = []string{"replace", "-f", "tmp.dat"}
+	result = ExecOutput("kubectl", commandOptions)
+	fmt.Println(result)
 }
