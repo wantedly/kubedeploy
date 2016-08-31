@@ -32,17 +32,14 @@ func newKubeClient() (*client.Client, error) {
 
 func main() {
 
-	var image = flag.String("i", "blank", "string")
-	var pod = flag.String("p", "blank", "string")
+	var image = flag.String("i", "no", "help message for long")
+	var pod = flag.String("p", "no", "help message for long")
 	flag.Parse()
-
 	if flag.NArg() == 0 || flag.NArg() > 5 {
 		help()
 		os.Exit(1)
 	}
-
-	fmt.Println(*image)
-	fmt.Println(*pod)
+	var params = []string{*image, *pod}
 
 	kubeClient, err := newKubeClient()
 	if err != nil {
@@ -50,6 +47,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	cli(kubeClient)
+	cli(kubeClient, params)
 
 }

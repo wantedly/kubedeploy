@@ -3,9 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+
+	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
-func cli() {
+func cli(kubeClient *client.Client, params []string) {
 	switch flag.Arg(0) {
 	case "get":
 		podInfos := get(kubeClient)
@@ -13,8 +15,9 @@ func cli() {
 			fmt.Println(info)
 		}
 	case "deploy":
-		// podInfos := getPodInfos(kubeClient)
-		deploy(flag.Arg(1))
+		if params[0] != "no" && params[1] != "no" {
+			deploy(params)
+		}
 	default:
 		help()
 	}

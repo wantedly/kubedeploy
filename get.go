@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"k8s.io/kubernetes/pkg/api"
+	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
 func get(kubeClient *client.Client) []string {

@@ -1,5 +1,5 @@
 package main
 
-func deploy(image string) {
+func deploy(params []string) {
 	//
 }
