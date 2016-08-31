@@ -4,9 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strings"
 
-	"k8s.io/kubernetes/pkg/api"
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 	"k8s.io/kubernetes/pkg/client/unversioned/clientcmd"
 )
@@ -32,32 +30,19 @@ func newKubeClient() (*client.Client, error) {
 	return kubeClient, nil
 }
 
-func getPodInfos(kubeClient *client.Client) []string {
-	pods, err := kubeClient.Pods(api.NamespaceAll).List(api.ListOptions{})
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
-
-	podInfos := []string{}
-	for _, pod := range pods.Items {
-		podInfoList := []string{
-			pod.Name,
-			pod.Spec.Containers[0].Image,
-			pod.Namespace}
-		podInfos = append(podInfos, strings.Join(podInfoList, ","))
-	}
-
-	return podInfos
-}
-
 func main() {
 
+	var image = flag.String("i", "blank", "string")
+	var pod = flag.String("p", "blank", "string")
 	flag.Parse()
-	if flag.NArg() != 1 {
-		fmt.Println("Usage: ./kubedeploy get")
+
+	if flag.NArg() == 0 || flag.NArg() > 5 {
+		help()
 		os.Exit(1)
 	}
+
+	fmt.Println(*image)
+	fmt.Println(*pod)
 
 	kubeClient, err := newKubeClient()
 	if err != nil {
@@ -65,9 +50,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	podInfos := getPodInfos(kubeClient)
+	cli(kubeClient)
 
-	for _, info := range podInfos {
-		fmt.Println(info)
-	}
 }
