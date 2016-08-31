@@ -32,6 +32,11 @@ func newKubeClient() (*client.Client, error) {
 
 func main() {
 
+	if len(os.Args) < 2 {
+		help()
+		os.Exit(1)
+	}
+
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var (
 		pod   = fs.String("p", "", "Pod name")

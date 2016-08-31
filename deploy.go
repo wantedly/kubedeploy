@@ -41,13 +41,13 @@ func deploy(kubeClient *client.Client, params map[string]string) {
 	}
 
 	commandOptions := []string{"get", "pod", myPodInfo["pod"], "-o", "yaml"}
-	result := ExecOutput("kubectl", commandOptions)
+	result := execOutput("kubectl", commandOptions)
 	result = strings.Replace(result, myPodInfo["image"], params["image"], -1)
 
 	ioutil.WriteFile("tmp.dat", []byte(result), os.ModePerm)
 	defer os.Remove("tmp.dat")
 
 	commandOptions = []string{"replace", "-f", "tmp.dat"}
-	result = ExecOutput("kubectl", commandOptions)
+	result = execOutput("kubectl", commandOptions)
 	fmt.Println(result)
 }
