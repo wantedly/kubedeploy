@@ -9,9 +9,17 @@ import (
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
-func get(kubeClient *client.Client) []string {
+func printInfos(podInfos []string) {
 
-	pods, err := kubeClient.Pods(api.NamespaceAll).List(api.ListOptions{})
+}
+
+func get(kubeClient *client.Client, namespace string) []string {
+
+	if namespace == "" {
+		namespace = api.NamespaceAll
+	}
+
+	pods, err := kubeClient.Pods(namespace).List(api.ListOptions{})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

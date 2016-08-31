@@ -11,7 +11,7 @@ func cli(kubeClient *client.Client, params map[string]string) {
 	switch params["subCommand"] {
 
 	case "get":
-		podInfos := get(kubeClient)
+		podInfos := get(kubeClient, params["namespace"])
 		for _, info := range podInfos {
 			fmt.Println(info)
 		}

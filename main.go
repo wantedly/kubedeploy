@@ -35,14 +35,16 @@ func main() {
 	}
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var (
-		pod   = fs.String("p", "", "Pod name")
-		image = fs.String("i", "", "Image name")
+		pod       = fs.String("p", "", "Pod name")
+		image     = fs.String("i", "", "Image name")
+		namespace = fs.String("n", "", "Namespace name")
 	)
 	fs.Parse(os.Args[2:])
 	var params = map[string]string{
 		"subCommand": os.Args[1],
 		"image":      *image,
 		"pod":        *pod,
+		"namespace":  *namespace,
 	}
 
 	kubeClient, err := newKubeClient()

@@ -5,7 +5,7 @@ import "fmt"
 func help() {
 	fmt.Println(`
 Usage:
-  kubedeploy get
+  kubedeploy get [-n namespace]
   kubedeploy deploy -p pod -i image
 	`)
 }

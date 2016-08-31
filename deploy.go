@@ -32,7 +32,7 @@ func getMatchedPodInfo(pod string, podInfos []string) map[string]string {
 
 func deploy(kubeClient *client.Client, params map[string]string) {
 
-	podInfos := get(kubeClient)
+	podInfos := get(kubeClient, "")
 
 	myPodInfo := getMatchedPodInfo(params["pod"], podInfos)
 	if myPodInfo["pod"] == "" {
