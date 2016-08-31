@@ -32,14 +32,18 @@ func newKubeClient() (*client.Client, error) {
 
 func main() {
 
-	var image = flag.String("i", "no", "help message for long")
-	var pod = flag.String("p", "no", "help message for long")
-	flag.Parse()
-	if flag.NArg() == 0 || flag.NArg() > 5 {
-		help()
-		os.Exit(1)
+	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	var (
+		pod   = fs.String("p", "", "help message for long")
+		image = fs.String("i", "", "help message for long")
+	)
+	fs.Parse(os.Args[2:])
+
+	var params = map[string]string{
+		"subCommand": os.Args[1],
+		"image":      *image,
+		"pod":        *pod,
 	}
-	var params = []string{*image, *pod}
 
 	kubeClient, err := newKubeClient()
 	if err != nil {
