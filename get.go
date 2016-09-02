@@ -9,29 +9,26 @@ import (
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
-func getMatchedPodInfo(pod string, podInfos []string) map[string]string {
-	var matchedPodInfo = map[string]string{
-		"pod":       "",
-		"image":     "",
-		"namespace": "",
-		"status":    "",
-	}
-	for _, record := range podInfos {
-		names := strings.Split(record, ",")
-		if names[0] == pod {
-			matchedPodInfo["pod"] = names[0]
-			matchedPodInfo["image"] = names[1]
-			matchedPodInfo["namespace"] = names[2]
+// func getPodStatus(kubeClient *client.Client, pod string, namespace string) string {
+// 	pod := getPods(kubeClient, namespace)
+//
+// }
+
+func getTargetPod(pods []api.Pod, podName string) api.Pod {
+	var ret api.Pod
+	f := false
+	for _, pod := range pods {
+		if pod.Name == podName {
+			ret = pod
+			f = true
 		}
 	}
-	return matchedPodInfo
+	if !f {
+		fmt.Println(podName + " doesn't exist.")
+		os.Exit(1)
+	}
+	return ret
 }
-
-// func getPodStatus(kubeClient *client.Client, pod string, namespace string) string {
-// podInfos := get(kubeClient, namespace)
-// myPodInfo := getMatchedPodInfo(pod, podInfos)
-// return myPodInfo["status"]
-// }
 
 func getPodInfos(pods []api.Pod) []string {
 	podInfos := []string{}

@@ -14,7 +14,6 @@ import (
 func isRunning(kubeClient *client.Client, pod string, namespace string) {
 	// get info
 	// status := getPodStatus(kubeClient, pod, namespace)
-	// fmt.Println(status)
 	// check status
 
 	// return
@@ -38,16 +37,12 @@ func replaceImage(pod, oldImage, newImage string) {
 
 func deploy(kubeClient *client.Client, params map[string]string) {
 
-	podInfos := getPodInfos(getPods(kubeClient, ""))
+	pods := getPods(kubeClient, "")
+	targetPod := getTargetPod(pods, params["pod"])
 
-	myPodInfo := getMatchedPodInfo(params["pod"], podInfos)
-	if myPodInfo["pod"] == "" {
-		fmt.Println(params["pod"] + " doesn't exist.")
-		os.Exit(1)
-	}
-
-	replaceImage(myPodInfo["pod"], myPodInfo["image"], params["image"])
+	replaceImage(targetPod.Name, targetPod.Spec.Containers[0].Image, params["image"])
 
 	isRunning(kubeClient, params["pod"], params["namespace"])
 
+	fmt.Println(targetPod.Name + ": " + targetPod.Spec.Containers[0].Image + " -> " + params["image"])
 }
