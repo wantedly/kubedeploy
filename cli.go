@@ -1,10 +1,6 @@
 package main
 
-import (
-	"fmt"
-
-	client "k8s.io/kubernetes/pkg/client/unversioned"
-)
+import client "k8s.io/kubernetes/pkg/client/unversioned"
 
 func cli(kubeClient *client.Client, params map[string]string) {
 
@@ -12,10 +8,7 @@ func cli(kubeClient *client.Client, params map[string]string) {
 
 	case "get":
 		pods := getPods(kubeClient, params["namespace"])
-		podInfos := getPodInfos(pods)
-		for _, info := range podInfos {
-			fmt.Println(info)
-		}
+		printPodCSV(pods)
 
 	case "deploy":
 		if params["image"] != "" && params["pod"] != "" {
