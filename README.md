@@ -3,9 +3,11 @@
 ## Usage
 
 ```
-$ kubedeploy get
-$ kubedeploy deploy -p pod_name -i new_image
+Usage:
+$ kubedeploy get [-n namespace] 
+$ kubedeploy deploy -p pod -i image [-n namespace]
 ```
+
 
 ### Example
 
