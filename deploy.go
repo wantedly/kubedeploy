@@ -3,36 +3,42 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
+	"os/exec"
 	"strings"
 
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
-func getMatchedPodInfo(pod string, podInfos []string) map[string]string {
+func isRunning(kubeClient *client.Client, pod string, namespace string) {
+	// get info
+	// status := getPodStatus(kubeClient, pod, namespace)
+	// fmt.Println(status)
+	// check status
 
-	var matchedPodInfo = map[string]string{
-		"pod":       "",
-		"image":     "",
-		"namespace": "",
+	// return
+}
+
+func replaceImage(pod, oldImage, newImage string) {
+
+	commandOptions := []string{"get", "pod", pod, "-o", "yaml"}
+	result := execOutput("kubectl", commandOptions)
+	result = strings.Replace(result, oldImage, newImage, -1)
+
+	ioutil.WriteFile("tmp.dat", []byte(result), os.ModePerm)
+	defer os.Remove("tmp.dat")
+
+	commandOptions = []string{"replace", "-f", "tmp.dat"}
+	_, err := exec.Command("kubectl", commandOptions...).Output()
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	for _, record := range podInfos {
-		names := strings.Split(record, ",")
-		if names[0] == pod {
-			matchedPodInfo["pod"] = names[0]
-			matchedPodInfo["image"] = names[1]
-			matchedPodInfo["namespace"] = names[2]
-		}
-	}
-
-	return matchedPodInfo
-
 }
 
 func deploy(kubeClient *client.Client, params map[string]string) {
 
-	podInfos := get(kubeClient, "")
+	podInfos := getPodInfos(getPods(kubeClient, ""))
 
 	myPodInfo := getMatchedPodInfo(params["pod"], podInfos)
 	if myPodInfo["pod"] == "" {
@@ -40,14 +46,8 @@ func deploy(kubeClient *client.Client, params map[string]string) {
 		os.Exit(1)
 	}
 
-	commandOptions := []string{"get", "pod", myPodInfo["pod"], "-o", "yaml"}
-	result := execOutput("kubectl", commandOptions)
-	result = strings.Replace(result, myPodInfo["image"], params["image"], -1)
+	replaceImage(myPodInfo["pod"], myPodInfo["image"], params["image"])
 
-	ioutil.WriteFile("tmp.dat", []byte(result), os.ModePerm)
-	defer os.Remove("tmp.dat")
+	isRunning(kubeClient, params["pod"], params["namespace"])
 
-	commandOptions = []string{"replace", "-f", "tmp.dat"}
-	result = execOutput("kubectl", commandOptions)
-	fmt.Println(result)
 }
