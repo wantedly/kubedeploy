@@ -3,7 +3,6 @@
 ## Usage
 
 ```
-Usage:
 $ kubedeploy get [-n namespace] 
 $ kubedeploy deploy -p pod -i image [-n namespace]
 ```
