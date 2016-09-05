@@ -16,6 +16,10 @@ func cli(kubeClient *client.Client, params map[string]string) {
 		} else {
 			help()
 		}
+
+	case "list":
+		getTagList(params["image"])
+
 	default:
 		help()
 	}
