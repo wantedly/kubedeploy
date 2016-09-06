@@ -3,8 +3,10 @@
 ## Usage
 
 ```
-$ kubedeploy get [-n namespace] 
-$ kubedeploy deploy -p pod -i image [-n namespace]
+$ kubedeploy get [-n namespace]
+$ kubedeploy replace -p pod -i image -n namespace
+$ kubedeploy deploy -s service
+$ kubedeploy list -i image
 ```
 
 
@@ -13,5 +15,6 @@ $ kubedeploy deploy -p pod -i image [-n namespace]
 #### deploy
 
 ```
-$ kubedeploy deploy -p Hello-World-xxxxx -i carumisu9/xxxyyyzzz
+$ kubedeploy replace -p Hello-World-xxxxx -i carumisu9/xxxyyyzzz
+$ kubedeploy deploy -s rails
 ```

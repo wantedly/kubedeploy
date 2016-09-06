@@ -57,11 +57,11 @@ func checkHealth(kubeClient *client.Client, targetPod api.Pod) bool {
 func deploy(kubeClient *client.Client, params map[string]string) {
 
 	// get svc
-	service := getTargetService(kubeClient, params["service"], params["namespace"])
-
-	// check active
-	bluePods, greenPods := getBlueAndGreenPods(kubeClient, service.Name, service.Namespace)
-	active := service.Spec.Selector["color"]
+	// service := getTargetService(kubeClient, params["service"], params["namespace"])
+	//
+	// // check active
+	// bluePods, greenPods := getBlueAndGreenPods(kubeClient, service.Name, service.Namespace)
+	// active := service.Spec.Selector["color"]
 
 	// get new image
 	// newImage := get

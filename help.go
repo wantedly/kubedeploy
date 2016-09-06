@@ -7,7 +7,7 @@ func help() {
 Usage:
 $ kubedeploy get [-n namespace]
 $ kubedeploy replace -p pod -i image -n namespace
-$ kubedeploy deploy -i image -s service
+$ kubedeploy deploy -s service
 $ kubedeploy list -i image
 	`)
 }

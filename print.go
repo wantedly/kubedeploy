@@ -11,7 +11,7 @@ import (
 
 func printTagList(tagList []string) {
 	for i, tag := range tagList {
-		fmt.Print(i)
+		fmt.Print(i + 1)
 		fmt.Print(" ")
 		fmt.Println(tag)
 	}
