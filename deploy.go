@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	pb "gopkg.in/cheggaaa/pb.v1"
@@ -56,15 +58,18 @@ func checkHealth(kubeClient *client.Client, targetPod api.Pod) bool {
 
 func deploy(kubeClient *client.Client, params map[string]string) {
 
-	// get svc
-	// service := getTargetService(kubeClient, params["service"], params["namespace"])
-	//
-	// // check active
-	// bluePods, greenPods := getBlueAndGreenPods(kubeClient, service.Name, service.Namespace)
-	// active := service.Spec.Selector["color"]
+	service := getTargetService(kubeClient, params["service"], params["namespace"])
+	if service.Spec.Selector["color"] == "" {
+		fmt.Println("blue-green pods don't exist.")
+		os.Exit(1)
+	}
 
-	// get new image
-	// newImage := get
+	bluePods, _ := getBlueAndGreenPods(kubeClient, service.Name, service.Namespace)
+
+	// active := service.Spec.Selector["color"]
+	image := trimImageName(bluePods[0].Spec.Containers[0].Image)
+	tagList := getTagList(image)
+	tag := getNewestMasterTag(tagList)
 
 	// replace standby image
 	// if active == "blue" {

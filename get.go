@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strings"
 
 	"k8s.io/kubernetes/pkg/api"
 	client "k8s.io/kubernetes/pkg/client/unversioned"
@@ -14,11 +15,18 @@ import (
 
 var QUAYIO string = "https://quay.io/api/v1/repository/"
 
-// func getNewestMasterTag() []string {
-//
-// }
+func getNewestMasterTag(tagList []string) string {
+
+	for _, tag := range tagList {
+		if strings.Index(tag, "master") != -1 {
+			return tag
+		}
+	}
+	return ""
+}
 
 func getTagList(image string) []string {
+
 	url := QUAYIO + path.Join(image, "tag")
 
 	resp, err := http.Get(url)
@@ -59,13 +67,17 @@ func getBlueAndGreenPods(kubeClient *client.Client, service, namespace string) (
 	var bluePods = []api.Pod{}
 	var greenPods = []api.Pod{}
 	for _, pod := range pods {
-		if pod.Labels["name"] != service {
+		if pod.Labels["name"] == service {
 			if pod.Labels["color"] == "blue" {
 				bluePods = append(bluePods, pod)
 			} else if pod.Labels["color"] == "green" {
 				greenPods = append(greenPods, pod)
 			}
 		}
+	}
+	if len(bluePods) == 0 || len(greenPods) == 0 {
+		fmt.Println("blue-green pods don't exist.")
+		os.Exit(1)
 	}
 	return bluePods, greenPods
 }
