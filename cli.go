@@ -14,14 +14,14 @@ func cli(kubeClient *client.Client, params map[string]string) {
 
 	case "replace":
 		if params["image"] != "" && params["pod"] != "" {
-			deploy(kubeClient, params)
+			replace(kubeClient, params)
 		} else {
 			help()
 		}
 
 	case "deploy":
-		if params["image"] != "" && params["pod"] != "" {
-			deployBG(kubeClient, params)
+		if params["image"] != "" && params["pod"] != "" && params["service"] != "" {
+			deploy(kubeClient, params)
 		} else {
 			help()
 		}

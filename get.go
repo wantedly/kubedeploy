@@ -61,13 +61,16 @@ func getTargetPod(kubeClient *client.Client, podName string, namespace string) a
 	return *targetPod
 }
 
-func getTargetService(kubeClient *client.Client, namespace string) []api.Service {
-	services, err := kubeClient.Services(namespace).List(api.ListOptions{})
+func getTargetService(kubeClient *client.Client, serviceName string, namespace string) api.Service {
+	if namespace == "" {
+		namespace = "default"
+	}
+	targetService, err := kubeClient.Services(namespace).Get(serviceName)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	return services.Items
+	return *targetService
 }
 
 func getServices(kubeClient *client.Client, namespace string) []api.Service {

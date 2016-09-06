@@ -38,6 +38,7 @@ func main() {
 		pod       = fs.String("p", "", "Pod name")
 		image     = fs.String("i", "", "Image name")
 		namespace = fs.String("n", "", "Namespace name")
+		service   = fs.String("s", "", "Service name")
 	)
 	fs.Parse(os.Args[2:])
 	var params = map[string]string{
@@ -45,6 +46,7 @@ func main() {
 		"image":      *image,
 		"pod":        *pod,
 		"namespace":  *namespace,
+		"service":    *service,
 	}
 
 	kubeClient, err := newKubeClient()
