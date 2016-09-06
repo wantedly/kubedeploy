@@ -17,7 +17,9 @@ func printPodsTable(pods []api.Pod) {
 			pod.Name,
 			pod.Spec.Containers[0].Image,
 			pod.Namespace,
+			pod.CreationTimestamp.String(),
 		})
+
 	}
 
 	table := tablewriter.NewWriter(os.Stdout)
@@ -25,6 +27,7 @@ func printPodsTable(pods []api.Pod) {
 		"Name",
 		"Image",
 		"Namespace",
+		"Created at",
 	})
 	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 	table.SetCenterSeparator("|")
@@ -41,6 +44,7 @@ func printServicesTable(services []api.Service) {
 			service.Name,
 			service.Namespace,
 			service.Spec.Selector["color"],
+			service.CreationTimestamp.String(),
 		})
 	}
 
@@ -49,6 +53,7 @@ func printServicesTable(services []api.Service) {
 		"Name",
 		"Namespace",
 		"Color",
+		"Created at",
 	})
 	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 	table.SetCenterSeparator("|")

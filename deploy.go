@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	pb "gopkg.in/cheggaaa/pb.v1"
@@ -60,8 +59,8 @@ func deploy(kubeClient *client.Client, params map[string]string) {
 	// pod := getTargetPod(kubeClient, params["pod"], params["namespace"])
 
 	// get svc
-	svc := getTargetService(kubeClient, params["service"], params["namespace"])
-	fmt.Println(svc)
+	// svc := getTargetService(kubeClient, params["service"], params["namespace"])
+
 	// check active
 
 	// get the other pod
