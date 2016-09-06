@@ -58,6 +58,6 @@ func printServicesTable(services []api.Service) {
 
 }
 
-func printDeploy(oldImage, newImage string) {
-	fmt.Println("Deploy: " + oldImage + " => " + newImage)
+func printReplace(old, new string) {
+	fmt.Println("Replace: " + old + " => " + new)
 }
