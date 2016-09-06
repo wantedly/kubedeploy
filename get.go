@@ -13,8 +13,6 @@ import (
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
-var QUAYIO string = "https://quay.io/api/v1/repository/"
-
 func getNewestMasterTag(tagList []string) string {
 
 	for _, tag := range tagList {

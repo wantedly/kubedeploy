@@ -58,27 +58,36 @@ func checkHealth(kubeClient *client.Client, targetPod api.Pod) bool {
 
 func deploy(kubeClient *client.Client, params map[string]string) {
 
+	// get service
 	service := getTargetService(kubeClient, params["service"], params["namespace"])
 	if service.Spec.Selector["color"] == "" {
 		fmt.Println("blue-green pods don't exist.")
 		os.Exit(1)
 	}
 
+	// get blue and green pods
 	bluePods, _ := getBlueAndGreenPods(kubeClient, service.Name, service.Namespace)
 
-	// active := service.Spec.Selector["color"]
-	image := trimImageName(bluePods[0].Spec.Containers[0].Image)
-	tagList := getTagList(image)
+	// get newest master tag
+	image := bluePods[0].Spec.Containers[0].Image
+	trimedImage := trimImageName(image)
+	tagList := getTagList(trimedImage)
 	tag := getNewestMasterTag(tagList)
+	newImage := QUAYPATH + trimedImage + ":" + tag
 
-	// replace standby image
-	// if active == "blue" {
-	// 	for _, pod := range bluePods {
-	// 		replaceImage(pod.Name, pod., newImage)
-	// 	}
-	// } else if active == "green" {
-	// 	printPodsTable(greenPods)
-	// }
+	// deploy new image to standby pod
+	currentImage := bluePods[0].Spec.Containers[0].Image
+
+	active := service.Spec.Selector["color"]
+	if active == "blue" {
+		for _, pod := range greenPods {
+			replaceImage(pod.Name, currentImage, newImage)
+		}
+	} else if active == "green" {
+		for _, pod := range bluePods {
+			replaceImage(pod.Name, currentImage, newImage)
+		}
+	}
 
 	// health check
 
