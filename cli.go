@@ -8,11 +8,20 @@ func cli(kubeClient *client.Client, params map[string]string) {
 
 	case "get":
 		pods := getPods(kubeClient, params["namespace"])
-		printPodCSV(pods)
+		services := getServices(kubeClient, params["namespace"])
+		printPodsTable(pods)
+		printServicesTable(services)
+
+	case "replace":
+		if params["image"] != "" && params["pod"] != "" {
+			deploy(kubeClient, params)
+		} else {
+			help()
+		}
 
 	case "deploy":
 		if params["image"] != "" && params["pod"] != "" {
-			deploy(kubeClient, params)
+			deployBG(kubeClient, params)
 		} else {
 			help()
 		}

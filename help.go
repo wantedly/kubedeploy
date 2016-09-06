@@ -6,7 +6,8 @@ func help() {
 	fmt.Println(`
 Usage:
 $ kubedeploy get [-n namespace]
-$ kubedeploy deploy -p pod -i image
+$ kubedeploy replace -p pod -i image -n namespace
+$ kubedeploy deploy -p pod -i image -n namespace
 $ kubedeploy list -i image
 	`)
 }

@@ -61,6 +61,27 @@ func getTargetPod(kubeClient *client.Client, podName string, namespace string) a
 	return *targetPod
 }
 
+func getTargetService(kubeClient *client.Client, namespace string) []api.Service {
+	services, err := kubeClient.Services(namespace).List(api.ListOptions{})
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	return services.Items
+}
+
+func getServices(kubeClient *client.Client, namespace string) []api.Service {
+	if namespace == "" {
+		namespace = api.NamespaceAll
+	}
+	services, err := kubeClient.Services(namespace).List(api.ListOptions{})
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	return services.Items
+}
+
 func getPods(kubeClient *client.Client, namespace string) []api.Pod {
 	if namespace == "" {
 		namespace = api.NamespaceAll

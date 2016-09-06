@@ -78,6 +78,25 @@ func replaceImage(podName, oldImage, newImage string) {
 	}
 }
 
+func deployBG(kubeClient *client.Client, params map[string]string) {
+
+	pod := getTargetPod(kubeClient, params["pod"], params["namespace"])
+
+	// get svc
+	svc := getTargetService(kubeClient, pod.Namespace)
+	fmt.Println(svc)
+	// check active
+
+	// get the other pod
+
+	// replace standby image
+
+	// health check
+
+	// chenge blue-green
+
+}
+
 func deploy(kubeClient *client.Client, params map[string]string) {
 
 	targetPod := getTargetPod(kubeClient, params["pod"], params["namespace"])
