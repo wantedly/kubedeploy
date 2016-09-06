@@ -28,7 +28,8 @@ func cli(kubeClient *client.Client, params map[string]string) {
 
 	case "list":
 		if params["image"] != "" {
-			getTagList(params["image"])
+			tagList := getTagList(params["image"])
+			printTagList(tagList)
 		} else {
 			help()
 		}

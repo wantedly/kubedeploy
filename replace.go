@@ -14,6 +14,7 @@ import (
 
 func replaceImage(podName, oldImage, newImage string) {
 	printReplace(oldImage, newImage)
+
 	commandOptions := []string{"get", "pod", podName, "-o", "yaml"}
 	result := execOutput("kubectl", commandOptions)
 	result = strings.Replace(result, oldImage, newImage, -1)
@@ -28,8 +29,8 @@ func replaceImage(podName, oldImage, newImage string) {
 	}
 }
 
-func replaceColor(service, color string) {
-	commandOptions := []string{"get", "svc", service, "-o", "yaml"}
+func replaceColor(serviceName, color string) {
+	commandOptions := []string{"get", "svc", serviceName, "-o", "yaml"}
 	result := execOutput("kubectl", commandOptions)
 
 	if color == "blue" {

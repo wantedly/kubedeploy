@@ -60,22 +60,23 @@ func deploy(kubeClient *client.Client, params map[string]string) {
 	service := getTargetService(kubeClient, params["service"], params["namespace"])
 
 	// check active
-	targetPods := getBlueGreenPods(kubeClient, service.Name, service.Namespace)
-	color := service.Spec.Selector["color"]
+	bluePods, greenPods := getBlueAndGreenPods(kubeClient, service.Name, service.Namespace)
+	active := service.Spec.Selector["color"]
 
-	printPodsTable(targetPods)
-
-	// get blue and green pod
+	// get new image
+	// newImage := get
 
 	// replace standby image
-	if color == "blue" {
-
-	} else if color == "green" {
-
-	}
+	// if active == "blue" {
+	// 	for _, pod := range bluePods {
+	// 		replaceImage(pod.Name, pod., newImage)
+	// 	}
+	// } else if active == "green" {
+	// 	printPodsTable(greenPods)
+	// }
 
 	// health check
 
 	// chenge blue-green
-
+	// replaceColor(service.Name, active)
 }

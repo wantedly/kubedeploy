@@ -9,6 +9,14 @@ import (
 	"k8s.io/kubernetes/pkg/api"
 )
 
+func printTagList(tagList []string) {
+	for i, tag := range tagList {
+		fmt.Print(i)
+		fmt.Print(" ")
+		fmt.Println(tag)
+	}
+}
+
 func printPodsTable(pods []api.Pod) {
 	color.Red("=== Pod ===")
 	data := [][]string{}

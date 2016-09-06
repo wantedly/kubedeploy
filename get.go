@@ -14,7 +14,11 @@ import (
 
 var QUAYIO string = "https://quay.io/api/v1/repository/"
 
-func getTagList(image string) {
+// func getNewestMasterTag() []string {
+//
+// }
+
+func getTagList(image string) []string {
 	url := QUAYIO + path.Join(image, "tag")
 
 	resp, err := http.Get(url)
@@ -32,6 +36,8 @@ func getTagList(image string) {
 		os.Exit(1)
 	}
 
+	var tagList = []string{}
+
 	m := f.(map[string]interface{})
 	for _, v := range m {
 		switch vv := v.(type) {
@@ -39,25 +45,29 @@ func getTagList(image string) {
 		case int:
 		case bool:
 		case []interface{}:
-			for i, u := range vv {
-				id := u.(map[string]interface{})["docker_image_id"].(string)
-				fmt.Println(i+1, u.(map[string]interface{})["name"].(string)+"_"+id)
+			for _, u := range vv {
+				tagList = append(tagList, u.(map[string]interface{})["name"].(string))
 			}
 		default:
 		}
 	}
-
+	return tagList
 }
 
-func getBlueGreenPods(kubeClient *client.Client, service, namespace string) []api.Pod {
+func getBlueAndGreenPods(kubeClient *client.Client, service, namespace string) ([]api.Pod, []api.Pod) {
 	pods := getPods(kubeClient, namespace)
-	var targetPods = []api.Pod{}
+	var bluePods = []api.Pod{}
+	var greenPods = []api.Pod{}
 	for _, pod := range pods {
-		if pod.Labels["name"] != service && (pod.Labels["color"] == "blue" || pod.Labels["color"] == "green") {
-			targetPods = append(targetPods, pod)
+		if pod.Labels["name"] != service {
+			if pod.Labels["color"] == "blue" {
+				bluePods = append(bluePods, pod)
+			} else if pod.Labels["color"] == "green" {
+				greenPods = append(greenPods, pod)
+			}
 		}
 	}
-	return targetPods
+	return bluePods, greenPods
 }
 
 func getTargetPod(kubeClient *client.Client, podName string, namespace string) api.Pod {
