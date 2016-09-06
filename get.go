@@ -49,6 +49,17 @@ func getTagList(image string) {
 
 }
 
+func getBlueGreenPods(kubeClient *client.Client, service, namespace string) []api.Pod {
+	pods := getPods(kubeClient, namespace)
+	var targetPods = []api.Pod{}
+	for _, pod := range pods {
+		if pod.Labels["name"] != service && (pod.Labels["color"] == "blue" || pod.Labels["color"] == "green") {
+			targetPods = append(targetPods, pod)
+		}
+	}
+	return targetPods
+}
+
 func getTargetPod(kubeClient *client.Client, podName string, namespace string) api.Pod {
 	if namespace == "" {
 		namespace = "default"

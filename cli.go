@@ -20,7 +20,7 @@ func cli(kubeClient *client.Client, params map[string]string) {
 		}
 
 	case "deploy":
-		if params["image"] != "" && params["pod"] != "" && params["service"] != "" {
+		if params["image"] != "" && params["service"] != "" {
 			deploy(kubeClient, params)
 		} else {
 			help()
