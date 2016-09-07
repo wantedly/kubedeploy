@@ -1,3 +1,2 @@
-*
-!bin/kubedeploy
-!Dockerfile
+bin/kubedeploy
+Dockerfile
