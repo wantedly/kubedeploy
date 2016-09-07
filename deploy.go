@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/fatih/color"
+
+	"k8s.io/kubernetes/pkg/api"
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
@@ -27,18 +30,34 @@ func deploy(kubeClient *client.Client, params map[string]string) {
 	newImage := QUAYPATH + trimedImage + ":" + tag
 
 	// deploy new image to standby pods
-	currentImage := bluePods[0].Spec.Containers[0].Image
 	active := service.Spec.Selector["color"]
+	var standby string
+	var replacePods []api.Pod
 	if active == "blue" {
-		for _, pod := range greenPods {
-			replaceImage(pod, currentImage, newImage)
-		}
+		standby = "green"
+		replacePods = greenPods
 	} else if active == "green" {
-		for _, pod := range bluePods {
-			replaceImage(pod, currentImage, newImage)
+		standby = "blue"
+		replacePods = bluePods
+	}
+	for _, pod := range replacePods {
+		replaceParams := map[string]string{
+			"pod":       pod.Name,
+			"image":     newImage,
+			"namespace": pod.Namespace,
 		}
+		replace(kubeClient, replaceParams)
 	}
 
 	// chenge blue-green
-	// replaceColor(service.Name, active)
+	replaceColor(service)
+
+	// check color
+	service = getTargetService(kubeClient, params["service"], params["namespace"])
+	if service.Spec.Selector["color"] == standby {
+		color.Green("Blue-Green Deploy Success!!")
+	} else {
+		color.Red("Blue-Green Deploy Falied!!")
+	}
+
 }

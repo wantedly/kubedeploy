@@ -66,6 +66,7 @@ func getBlueAndGreenPods(kubeClient *client.Client, service, namespace string) (
 	pods := getPods(kubeClient, namespace)
 	var bluePods = []api.Pod{}
 	var greenPods = []api.Pod{}
+
 	for _, pod := range pods {
 		if pod.Labels["name"] == service {
 			if pod.Labels["color"] == "blue" {

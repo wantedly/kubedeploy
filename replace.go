@@ -30,13 +30,16 @@ func replaceImage(pod api.Pod, oldImage, newImage string) {
 	}
 }
 
-func replaceColor(serviceName, color string) {
-	commandOptions := []string{"get", "svc", serviceName, "-o", "yaml"}
+func replaceColor(service api.Service) {
+	commandOptions := []string{"get", "svc", service.Name, "--namespace=" + service.Namespace, "-o", "yaml"}
 	result := execOutput("kubectl", commandOptions)
+	currentColor := service.Spec.Selector["color"]
 
-	if color == "blue" {
+	if currentColor == "blue" {
+		fmt.Println("Change: blue => green")
 		result = strings.Replace(result, "blue", "green", -1)
 	} else {
+		fmt.Println("Change: green => blue")
 		result = strings.Replace(result, "green", "blue", -1)
 	}
 
@@ -50,47 +53,27 @@ func replaceColor(serviceName, color string) {
 	}
 }
 
-func replaceBlueGreen(kubeClient *client.Client, targetPod api.Pod, oldImage string, newImage string) {
-
-	printReplace(oldImage, newImage)
-	replaceImage(targetPod, oldImage, newImage)
-
-	if check(kubeClient, targetPod) {
-		color.Green("Deploy Success!!")
-	} else {
-
-		color.Red("Deploy Failed!!")
-		color.Red("Revert!!")
-
-		targetPod = getTargetPod(kubeClient, targetPod.Name, targetPod.Namespace)
-		printReplace(newImage, oldImage)
-		replaceImage(targetPod, newImage, oldImage)
-
-		if check(kubeClient, targetPod) {
-			color.Green("Revert Success!!")
-		} else {
-			color.Red("Revert Failed!!")
-			fmt.Println("Check " + targetPod.Name)
-			os.Exit(1)
-		}
-	}
-
-}
-
 func replace(kubeClient *client.Client, params map[string]string) {
 
 	targetPod := getTargetPod(kubeClient, params["pod"], params["namespace"])
 	oldImage := targetPod.Spec.Containers[0].Image
 	newImage := params["image"]
+	success := false
 
+	// replace image
 	printReplace(oldImage, newImage)
 	replaceImage(targetPod, oldImage, newImage)
 
+	// health check
 	if check(kubeClient, targetPod) {
 		color.Green("Deploy Success!!")
+		success = true
 	} else {
-
 		color.Red("Deploy Failed!!")
+	}
+
+	// revert image
+	if !success {
 		color.Red("Revert!!")
 
 		targetPod = getTargetPod(kubeClient, params["pod"], params["namespace"])
