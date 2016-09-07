@@ -8,14 +8,3 @@ $ kubedeploy replace -p pod -i image -n namespace
 $ kubedeploy deploy -s service -n namespace
 $ kubedeploy list -i image
 ```
-
-
-### Example
-
-#### deploy
-
-```
-$ kubedeploy replace -p Hello-World-xxxxx -i carumisu9/xxxyyyzzz
-$ kubedeploy deploy -s rails -n rails
-$ kubedeploy list -i carumisu9/xxxxxx
-```
