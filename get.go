@@ -43,7 +43,6 @@ func getTagList(image string) []string {
 	}
 
 	var tagList = []string{}
-
 	m := f.(map[string]interface{})
 	for _, v := range m {
 		switch vv := v.(type) {
@@ -52,7 +51,10 @@ func getTagList(image string) []string {
 		case bool:
 		case []interface{}:
 			for _, u := range vv {
-				tagList = append(tagList, u.(map[string]interface{})["name"].(string))
+				_, ok := u.(map[string]interface{})["name"]
+				if ok {
+					tagList = append(tagList, u.(map[string]interface{})["name"].(string))
+				}
 			}
 		default:
 		}

@@ -13,7 +13,12 @@ func printTagList(tagList []string) {
 	for i, tag := range tagList {
 		fmt.Print(i + 1)
 		fmt.Print(" ")
-		fmt.Println(tag)
+		fmt.Print(tag)
+		if i == 0 {
+			color.Green(" [NEW]")
+		} else {
+			fmt.Println()
+		}
 	}
 }
 
