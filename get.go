@@ -62,6 +62,21 @@ func getTagList(image string) []string {
 	return tagList
 }
 
+func getPodsWithService(kubeClient *client.Client, service, namespace string) []api.Pod {
+	pods := getPods(kubeClient, namespace)
+	var podsWithService = []api.Pod{}
+	for _, pod := range pods {
+		if pod.Labels["name"] == service {
+			podsWithService = append(podsWithService, pod)
+		}
+	}
+	if len(podsWithService) == 0 {
+		fmt.Println("No pods with the service don't exist.")
+		os.Exit(1)
+	}
+	return podsWithService
+}
+
 func getBlueAndGreenPods(kubeClient *client.Client, service, namespace string) ([]api.Pod, []api.Pod) {
 	pods := getPods(kubeClient, namespace)
 	var bluePods = []api.Pod{}

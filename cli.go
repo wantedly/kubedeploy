@@ -19,11 +19,16 @@ func cli(kubeClient *client.Client, params map[string]string) {
 			help()
 		}
 
-	case "deploy":
+	case "deploy-bg":
 		if params["service"] != "" {
-			deploy(kubeClient, params)
+			bgDeploy(kubeClient, params)
 		} else {
 			help()
+		}
+
+	case "deploy-one":
+		if params["service"] != "" {
+			oneDeploy(kubeClient, params)
 		}
 
 	case "list":
