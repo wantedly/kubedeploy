@@ -28,3 +28,4 @@ main
 kubedeploy
 .DS_Store
 
+/vendor
