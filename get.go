@@ -16,7 +16,7 @@ import (
 func getNewestMasterTag(tagList []string) string {
 	for _, tag := range tagList {
 		if strings.Index(tag, "master-") != -1 {
-			if unique(tag, tagList) {
+			if isUnique(tag, tagList) {
 				return tag
 			}
 		}
@@ -24,7 +24,7 @@ func getNewestMasterTag(tagList []string) string {
 	return "master"
 }
 
-func unique(a string, list []string) bool {
+func isUnique(a string, list []string) bool {
 	count := 0
 	for _, b := range list {
 		if b == a {
