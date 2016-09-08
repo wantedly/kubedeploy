@@ -21,7 +21,7 @@ func getNewestMasterTag(tagList []string) string {
 			}
 		}
 	}
-	return "master"
+	return "latest"
 }
 
 func isUnique(a string, list []string) bool {
