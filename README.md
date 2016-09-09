@@ -15,12 +15,13 @@ $ make
 $ bin/kubedeploy COMMAND [OPTION]
 ```
 
-### Use From Docker
+### Run as Docker container
 
 ```
 $ git clone https://github.com/wantedly/kubedeploy
-$ docker build .
-$ docker run kubedeploy COMMAND [OPTION]
+$ cd kubedeploy
+$ docker build -t kubedeploy .
+$ docker run -v $HOME/.kube/config:/root/.kube/config kubedeploy COMMAND [OPTION]
 ```
 
 ## Usage
