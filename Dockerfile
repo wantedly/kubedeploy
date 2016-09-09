@@ -1,6 +1,5 @@
 FROM alpine:3.4
 
-ENV KUBECTL_VERSION v1.3.3
 ENV GOPATH /go
 
 COPY . /go/src/github.com/wantedly/kubedeploy
