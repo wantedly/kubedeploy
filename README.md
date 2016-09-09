@@ -1,6 +1,6 @@
 # kubedeploy
 
-Display and update images of Kubernetes deployment.
+Display and update images of Kubernetes deployment
 
 ## How to build and run
 
