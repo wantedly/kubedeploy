@@ -1,18 +1,6 @@
 package main
 
-import (
-	"log"
-	"os/exec"
-	"strings"
-)
-
-func execOutput(app string, commands []string) string {
-	out, err := exec.Command(app, commands...).Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return string(out)
-}
+import "strings"
 
 func trimImageName(imageName string) string {
 	head := strings.Index(imageName, QUAYPATH)
