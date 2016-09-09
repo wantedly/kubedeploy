@@ -2,19 +2,17 @@
 
 This tool enables to display and update Deployment's image in Kubernetes.
 
-## Setup
+## How to build and run
 
-### Use From Local PC
+### Run as standalone binary
 
-```
-$ git clone https://github.com/wantedly/kubedeploy
-```
-
-Set $GOPATH this repository.
+Go 1.6 or above is required.
 
 ```
-$ go build
-$ ./kubedeploy COMMAND [OPTION]
+$ go get -d https://github.com/wantedly/kubedeploy
+$ cd $GOPATH/src/github.com/wantedly/kubedeploy
+$ make
+$ bin/kubedeploy COMMAND [OPTION]
 ```
 
 ### Use From Docker
