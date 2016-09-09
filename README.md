@@ -1,6 +1,6 @@
 # kubedeploy
 
-This tool enables to display and update Deployment's image in Kubernetes.
+Display and update images of Kubernetes deployment.
 
 ## How to build and run
 
