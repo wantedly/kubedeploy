@@ -32,3 +32,6 @@ $ kubedeploy replace -p pod -i image -n namespace
 $ kubedeploy deploy -s service -n namespace
 $ kubedeploy list -i image
 ```
+
+## License
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
