@@ -50,7 +50,7 @@ func deploy(kubeClient *client.Client, params map[string]string) {
 	}
 
 	// chenge blue-green
-	replaceColor(service)
+	replaceColor(kubeClient, service)
 
 	// check color
 	service = getTargetService(kubeClient, params["service"], params["namespace"])

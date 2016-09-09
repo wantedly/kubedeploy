@@ -2,11 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
 	"os"
-	"os/exec"
-	"strings"
 
 	"github.com/fatih/color"
 
@@ -23,27 +19,24 @@ func replaceImage(kubeClient *client.Client, pod api.Pod, newImage string) {
 	}
 }
 
-func replaceColor(service api.Service) {
-	commandOptions := []string{"get", "svc", service.Name, "--namespace=" + service.Namespace, "-o", "yaml"}
-	result := execOutput("kubectl", commandOptions)
-	currentColor := service.Spec.Selector["color"]
+func replaceColor(kubeClient *client.Client, service api.Service) {
 
-	if currentColor == "blue" {
+	var newColor = ""
+	if service.Spec.Selector["color"] == "blue" {
 		fmt.Println("Change: blue => green")
-		result = strings.Replace(result, "blue", "green", -1)
-	} else {
+		newColor = "green"
+	} else if service.Spec.Selector["color"] == "green" {
 		fmt.Println("Change: green => blue")
-		result = strings.Replace(result, "green", "blue", -1)
+		newColor = "blue"
 	}
 
-	ioutil.WriteFile("tmp.dat", []byte(result), os.ModePerm)
-	defer os.Remove("tmp.dat")
-
-	commandOptions = []string{"replace", "-f", "tmp.dat"}
-	_, err := exec.Command("kubectl", commandOptions...).Output()
+	service.Spec.Selector["color"] = newColor
+	_, err := kubeClient.Services(service.Namespace).Update(&service)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
+
 }
 
 func replace(kubeClient *client.Client, params map[string]string) {
