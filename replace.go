@@ -14,19 +14,12 @@ import (
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
-func replaceImage(pod api.Pod, oldImage, newImage string) {
-
-	commandOptions := []string{"get", "pod", pod.Name, "--namespace=" + pod.Namespace, "-o", "yaml"}
-	result := execOutput("kubectl", commandOptions)
-	result = strings.Replace(result, oldImage, newImage, -1)
-
-	ioutil.WriteFile("tmp.dat", []byte(result), os.ModePerm)
-	defer os.Remove("tmp.dat")
-
-	commandOptions = []string{"replace", "-f", "tmp.dat"}
-	_, err := exec.Command("kubectl", commandOptions...).Output()
+func replaceImage(kubeClient *client.Client, pod api.Pod, newImage string) {
+	pod.Spec.Containers[0].Image = newImage
+	_, err := kubeClient.Pods(pod.Namespace).Update(&pod)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 }
 
@@ -62,7 +55,7 @@ func replace(kubeClient *client.Client, params map[string]string) {
 
 	// replace image
 	printReplace(oldImage, newImage)
-	replaceImage(targetPod, oldImage, newImage)
+	replaceImage(kubeClient, targetPod, newImage)
 
 	// health check
 	if check(kubeClient, targetPod) {
@@ -78,7 +71,7 @@ func replace(kubeClient *client.Client, params map[string]string) {
 
 		targetPod = getTargetPod(kubeClient, params["pod"], params["namespace"])
 		printReplace(newImage, oldImage)
-		replaceImage(targetPod, newImage, oldImage)
+		replaceImage(kubeClient, targetPod, oldImage)
 
 		if check(kubeClient, targetPod) {
 			color.Green("Revert Success!!")
