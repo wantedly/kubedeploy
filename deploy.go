@@ -10,7 +10,7 @@ import (
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
-func deploy(kubeClient *client.Client, params map[string]string) {
+func bgDeploy(kubeClient *client.Client, params map[string]string) {
 
 	// get service
 	service := getTargetService(kubeClient, params["service"], params["namespace"])
@@ -60,4 +60,32 @@ func deploy(kubeClient *client.Client, params map[string]string) {
 		color.Red("Blue-Green Deploy Falied!!")
 	}
 
+}
+
+func oneDeploy(kubeClient *client.Client, params map[string]string) {
+
+	// get service
+	service := getTargetService(kubeClient, params["service"], params["namespace"])
+	if service.Spec.Selector["color"] == "" {
+		fmt.Println("blue-green pods don't exist.")
+		os.Exit(1)
+	}
+
+	replacePods := getPodsWithService(kubeClient, service.Name, service.Namespace)
+
+	// get newest master tag
+	image := replacePods[0].Spec.Containers[0].Image
+	trimedImage := trimImageName(image)
+	tagList := getTagList(trimedImage)
+	tag := getNewestMasterTag(tagList)
+	newImage := QUAYPATH + trimedImage + ":" + tag
+
+	for _, pod := range replacePods {
+		replaceParams := map[string]string{
+			"pod":       pod.Name,
+			"image":     newImage,
+			"namespace": pod.Namespace,
+		}
+		replace(kubeClient, replaceParams)
+	}
 }
