@@ -14,13 +14,12 @@ import (
 )
 
 func getNewestMasterTag(tagList []string) string {
-
 	for _, tag := range tagList {
-		if strings.Index(tag, "master") != -1 {
+		if strings.Index(tag, "master-") != -1 {
 			return tag
 		}
 	}
-	return ""
+	return "latest"
 }
 
 func getTagList(image string) []string {

@@ -15,7 +15,7 @@ func bgDeploy(kubeClient *client.Client, params map[string]string) {
 	// get service
 	service := getTargetService(kubeClient, params["service"], params["namespace"])
 	if service.Spec.Selector["color"] == "" {
-		fmt.Println("blue-green pods don't exist.")
+		fmt.Println("No Color in Service.")
 		os.Exit(1)
 	}
 
